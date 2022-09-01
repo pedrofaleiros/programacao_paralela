@@ -2,16 +2,21 @@
 #include <stdlib.h>
 #include "omp.h"
 
-int main(int argc, char * argv[]) {
+int main(int argc, char *argv[]) {
 
 	int num_steps = 100000000;
-	int num_threads = 0;
+	int num_threads = atoi(argv[1]);
 
-	num_threads = atoi(argv[1]);
+	//printf("\nNUM THREADS: ");
+	//scanf("%d", &num_threads);
 
-	double pi, *sum, step;
+	double pi, step;
 
-	sum = malloc(sizeof(double) * num_threads);
+	int PAD = 8;
+
+	double sum[num_threads][PAD];
+
+	//sum = malloc(sizeof(double) * num_threads);
 
 	step = 1.0/(double) num_steps;
 
@@ -29,21 +34,21 @@ int main(int argc, char * argv[]) {
 
 		double x;
 
-		for(i = id, sum[id] = 0.0; i < num_steps; i = i + num){
+		for(i = id, sum[id][0] = 0.0; i < num_steps; i = i + num){
 			x = (i+0.5)*step;
-			sum[id] += 4.0/(1.0+x*x);
+			sum[id][0] += 4.0/(1.0+x*x);
 		}
 	}
 
 	t2 = omp_get_wtime();
 
 	for(int i = 0; i < num_threads; i++){
-		pi += sum[i] * step;
+		pi += sum[i][0] * step;
 	}
 
+	printf("\nThreads: %d", num_threads);
 	printf("\nTime: %lf", t2-t1);
 	printf("\npi: %lf\n", pi);
-
 
 	return 0;
 }
