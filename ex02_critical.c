@@ -17,8 +17,10 @@ int main(int argc, char * argv[]) {
 
 	omp_set_num_threads(num_threads);
 
-	double t1, t2;
 
+	double sum_geral = 0;
+
+	double t1, t2;
 	t1 = omp_get_wtime();
 
 	#pragma omp parallel
@@ -33,13 +35,15 @@ int main(int argc, char * argv[]) {
 			x = (i+0.5)*step;
 			sum[id] += 4.0/(1.0+x*x);
 		}
+
+		#pragma omp critical
+		sum_geral += sum[id];
 	}
 
 	t2 = omp_get_wtime();
 
-	for(int i = 0; i < num_threads; i++){
-		pi += sum[i] * step;
-	}
+	pi = sum_geral * step;
+
 
 	printf("\nTime: %lf", t2-t1);
 	printf("\npi: %lf\n", pi);

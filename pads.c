@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
 
-	int num_steps = 100000000;
+	int num_steps = 10000000;
 	int num_threads = atoi(argv[1]);
 
 	//printf("\nNUM THREADS: ");
